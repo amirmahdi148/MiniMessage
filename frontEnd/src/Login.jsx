@@ -57,7 +57,7 @@ const Login = ({ setPage }) => {
               placeholder="Enter your name"
               className={styles.userpass}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.toLowerCase())}
             />
             <input
               type="password"
