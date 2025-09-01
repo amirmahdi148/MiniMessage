@@ -126,7 +126,7 @@ app.get("/" , (req,res)=>{
 })
 
 app.get("/api/users", (req, res) => {
-  const users = db.prepare("SELECT username,encryptedUser, bio, ppURL FROM users").all();
+  const users = db.prepare("SELECT username, bio, ppURL FROM users").all();
   res.json(users);
 });
 

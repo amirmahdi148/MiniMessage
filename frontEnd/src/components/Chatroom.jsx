@@ -67,6 +67,7 @@ const Chatroom = ({ rec, setPage }) => {
 
     socket.on("registered", (id) =>
       console.log("Registered with socket id:", id)
+    
     );
 
     socket.on("privateMessage", ({ sender, message, timestamp }) => {
@@ -83,6 +84,7 @@ const Chatroom = ({ rec, setPage }) => {
   }, []);
 
   useEffect(() => {
+    localStorage.clear()
     if (!receiver) return;
 
     const receiverTr = receiver.trim().toLowerCase();
