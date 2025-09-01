@@ -101,7 +101,7 @@ io.on("connection", (socket) => {
 
 app.post("/api/signup", (req, res) => {
   const { username, password, bio, profilePictureUrl } = req.body;
-  const encryptedUser = encrypt(username)
+  const encryptedUser = JSON.stringify(encrypt(username))
   try {
     db.prepare(
       "INSERT INTO users (username, password , bio,encryptedUser, ppURL) VALUES (?, ?, ? ,?, ?)"
