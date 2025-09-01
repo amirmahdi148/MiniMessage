@@ -30,7 +30,7 @@ const Login = ({ setPage }) => {
 
       if (response.ok) {
         
-        const { ppURL , bio , encryptedUser } = data;
+        const {username , ppURL , bio , encryptedUser } = data;
 
         localStorage.setItem("user", JSON.stringify({ username,ppURL, bio , encryptedUser }));
 
