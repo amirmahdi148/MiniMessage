@@ -18,6 +18,7 @@ const Chatroom = ({ rec, setPage }) => {
   const storedUser = localStorage.getItem("user");
   const jsonized = storedUser ? JSON.parse(storedUser) : null;
 const verifyUser = async () => {
+  localStorage.clear()
   try {
     const response = await fetch("https://minimessage-egm3.onrender.com/api/verify", {
       method: "POST",
@@ -161,7 +162,7 @@ const verifyUser = async () => {
         <h2 className={styles.logoName}>💬 MiniMessage</h2>
 
         <div
-  onClick={verifyUser()}
+  onClick={verifyUser}
   style={{
     position: "absolute",
     right: "16px",
@@ -248,33 +249,7 @@ const verifyUser = async () => {
             justifyContent: "center",
           }}
         >
-          <div
-  onClick={() => setPage("Search")}
-  style={{
-    position: "absolute",
-    right: "0", 
-    top: "50%",
-    transform: "translateY(-50%)",
-    cursor: "pointer",
-    width: "24px",
-    
-    height: "24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    width="24"
-    height="24"
-    style={{ color: "#f8fafc" }}
-  >
-    <path d="M10 2a8 8 0 105.292 14.708l5.147 5.146a1 1 0 001.415-1.414l-5.146-5.147A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" />
-  </svg>
-</div>
+        
 
 
 
