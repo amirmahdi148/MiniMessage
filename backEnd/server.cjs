@@ -81,6 +81,9 @@ app.post("/api/login", (req, res) => {
   if (user) res.json(user);
   else res.status(401).json({ message: "Invalid credentials" });
 });
+app.get("/" , (req,res)=>{
+  res.json({hey : "wwassup"})
+})
 
 app.get("/api/users", (req, res) => {
   const users = db.prepare("SELECT username, bio, ppURL FROM users").all();
