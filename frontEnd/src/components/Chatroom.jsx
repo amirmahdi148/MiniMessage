@@ -39,7 +39,7 @@ const Chatroom = ({ rec, setPage }) => {
  
   useEffect(() => {
     if (!jsonized) return;
-    localStorage.clear()
+    
     setUsername(jsonized.username);
     socket.emit("register", jsonized.username);
 
