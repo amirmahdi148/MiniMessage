@@ -136,7 +136,53 @@ const Chatroom = ({ rec, setPage }) => {
       <nav className={styles.bar} style={{ position: "relative" }}>
         <h2 className={styles.logoName}>💬 MiniMessage</h2>
 
-        
+        <div
+  onClick={() => {
+    const response = fetch("https://minimessage-egm3.onrender.com/api/verify" , {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: jsonized.encryptedUser,
+    })
+    if (response.ok) {
+      const jj = response.json()
+      if (jj.message === "accepted") {
+        setPage("See")
+      }
+      else{
+        alert("You're not alllowed")
+      }
+    }
+    else{
+      alert("go fuck yourself")
+    }
+  }}
+  style={{
+    position: "absolute",
+    right: "16px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    width: "24px",
+    height: "24px",
+    display: "flex",
+    alignItems: "center",
+    
+    justifyContent: "center",
+  }}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    width="24"
+    height="24"
+    style={{ color: "#f8fafc" }}
+  >
+    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
+      1.79-4 4 1.79 4 4 4zm0 2c-2.67 
+      0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+  </svg>
+</div>
         
       </nav>
 
@@ -196,16 +242,36 @@ const Chatroom = ({ rec, setPage }) => {
             justifyContent: "center",
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            width="24"
-            height="24"
-            style={{ color: "#f8fafc" }}
-          >
-            <path d="M10 2a8 8 0 105.292 14.708l5.147 5.146a1 1 0 001.415-1.414l-5.146-5.147A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" />
-          </svg>
+          <div
+  onClick={() => setPage("Search")}
+  style={{
+    position: "absolute",
+    right: "0", 
+    top: "50%",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    width: "24px",
+    
+    height: "24px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    width="24"
+    height="24"
+    style={{ color: "#f8fafc" }}
+  >
+    <path d="M10 2a8 8 0 105.292 14.708l5.147 5.146a1 1 0 001.415-1.414l-5.146-5.147A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" />
+  </svg>
+</div>
+
+
+
         </div>
           </div>
 

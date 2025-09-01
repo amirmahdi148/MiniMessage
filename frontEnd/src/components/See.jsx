@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./See.css";
+import styles from "../See.module.css";
 
 const See = () => {
   const [users, setUsers] = useState([]);
@@ -48,7 +48,16 @@ const See = () => {
         {users.length === 0 && <p>هیچ کاربری وجود ندارد</p>}
         {users.map((user, i) => (
           <div key={i} className={styles.userCard}>
-            <div className={styles.username}>{user.username}</div>
+            <img
+              src={user.ppURL || "/default-avatar.png"}
+              alt={user.username}
+              className={styles.avatar}
+            />
+            <div className={styles.userInfo}>
+              <div className={styles.username}><b>نام کاربری:</b> {user.username}</div>
+              <div className={styles.bio}><b>بیو:</b> {user.bio || "—"}</div>
+              
+            </div>
             <button
               className={styles.deleteBtn}
               onClick={() => deleteUser(user.username)}

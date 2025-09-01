@@ -136,11 +136,39 @@ app.post("/api/getdata", (req, res) => {
   if (user) res.json(user);
   else res.status(404).json({ message: "User not found" });
 });
-
+app.post("/api/verify" , (req,res)=>{
+  const {encryptedUser} = req.body;
+  if (encryptedUser) {
+    try {
+      const parsed   = JSON.parse(encryptedUser)
+    const decrypted = decrypt(parsed)
+    const stmt = db.prepare("SELECT encryptedUser FROM users WHERE username = ?").get(decrypted)
+    if (stmt == encryptedUser) {
+      res.json({message : "accepted"})
+    }
+    else{
+      res.json({message : "denied"})
+    }
+    } catch (error) {
+      res.status(503).json({message : error})
+    }
+    
+  }
+})
 app.post("/api/messages", (req, res) => {
   const { sender, receiver } = req.body;
   const msgs = getLastMessages(sender, receiver);
   res.json(msgs);
 });
-
+app.delete("/api/delete" , (req,res)=>{
+  const {username} = req.body;
+  try {
+    const stmt = db.prepare("DELETE FROM users WHERE username = ?")
+  const result = stmt.run(username)
+  res.json("ok user deleted")
+  } catch (error) {
+    res.json({message : error})
+  }
+  
+})
 server.listen(5000, () => console.log("Server running on port 5000"));
