@@ -1,7 +1,7 @@
 // server.js
 const express = require("express");
 const http = require("http");
-const db = require("../dataBase/db.cjs"); 
+const db = require("./dataBase/db.cjs"); 
 const cors = require("cors");
 const { Server } = require("socket.io");
 
