@@ -19,12 +19,13 @@ const Chatroom = ({ rec, setPage }) => {
   const jsonized = storedUser ? JSON.parse(storedUser) : null;
   const verifyUser = async () => {
     try {
+      const parsed = JSON.parse(jsonized.encryptedUser)
       const response = await fetch(
         "https://minimessage-egm3.onrender.com/api/verify",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ encryptedUser: jsonized.encryptedUser }),
+          body: JSON.stringify({ encryptedUser: parsed }),
         }
       );
 
