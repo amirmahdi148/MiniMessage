@@ -19,6 +19,13 @@ const Chatroom = ({ rec, setPage }) => {
   const jsonized = storedUser ? JSON.parse(storedUser) : null;
   const verifyUser = async () => {
     try {
+      console.log("jsonized:", jsonized);
+console.log("encryptedUser raw:", jsonized?.encryptedUser);
+
+if (!jsonized?.encryptedUser) {
+  console.error("No encryptedUser found in localStorage!");
+  return;
+}
       const parsed = JSON.parse(jsonized.encryptedUser)
       const response = await fetch(
         "https://minimessage-egm3.onrender.com/api/verify",
