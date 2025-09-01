@@ -22,7 +22,7 @@ const Signup = ({ setPage }) => {
     setSuccess("");
 
     try {
-      const response = await fetch("http://10.72.194.238:5000/api/signup", {
+      const response = await fetch("https://minimessage-egm3.onrender.com/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, bio, profilePictureUrl }),

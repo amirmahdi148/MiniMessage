@@ -8,7 +8,7 @@ export default function Search({ setPage, setRec }) {
   const storedUser = localStorage.getItem("user");
   const jsonized = storedUser ? JSON.parse(storedUser) : null;
   useEffect(() => {
-    axios.get("http://10.72.194.238:5000/api/users")
+    axios.get("https://minimessage-egm3.onrender.com/api/users")
       .then((res) => setUsers(res.data))
       .catch((err) => console.error(err));
   }, []);

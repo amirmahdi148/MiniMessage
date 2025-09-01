@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import styles from "/src/styled.module.css";
 import testPicture from "/src/assets/test.png";
 
-const socket = io("http://10.72.194.238:5000");
+const socket = io("https://minimessage-egm3.onrender.com");
 
 const Chatroom = ({ rec, setPage }) => {
   const [username, setUsername] = useState("");
@@ -66,7 +66,7 @@ const Chatroom = ({ rec, setPage }) => {
 
     const fetchReceiverData = async () => {
       try {
-        const res = await fetch("http://10.72.194.238:5000/api/getdata", {
+        const res = await fetch("https://minimessage-egm3.onrender.com/api/getdata", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ receiver: receiverTr }),
@@ -88,7 +88,7 @@ const Chatroom = ({ rec, setPage }) => {
 
     const fetchMessages = async () => {
       try {
-        const res = await fetch("http://10.72.194.238:5000/api/messages", {
+        const res = await fetch("https://minimessage-egm3.onrender.com/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sender: username, receiver: receiverTr }),
