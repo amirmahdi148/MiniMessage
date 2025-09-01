@@ -23,7 +23,7 @@ const See = () => {
   const deleteUser = async (username) => {
     try {
       const res = await fetch("https://minimessage-egm3.onrender.com/api/delete", {
-        method: "POST",
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username }),
       });
