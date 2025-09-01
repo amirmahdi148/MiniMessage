@@ -36,7 +36,7 @@ export default function Search({ setPage, setRec }) {
 
         <div className="chatBox" style={{ marginTop: "70px" }}>
           {filtered.map((u, i) => {
-  const isMe = u.username === jsonized?.username;
+  const isMe = u.encryptedUser === jsonized?.encryptedUser;
 
   return (
     <div

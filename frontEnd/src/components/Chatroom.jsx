@@ -17,6 +17,30 @@ const Chatroom = ({ rec, setPage }) => {
 
   const storedUser = localStorage.getItem("user");
   const jsonized = storedUser ? JSON.parse(storedUser) : null;
+const verifyUser = async () => {
+  try {
+    const response = await fetch("https://minimessage-egm3.onrender.com/api/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ encryptedUser: jsonized.encryptedUser }),
+    });
+
+    if (!response.ok) {
+      alert("Request failed");
+      return;
+    }
+
+    const jj = await response.json();
+    if (jj.message === "accepted") {
+      setPage("See");
+    } else {
+      alert("You're not allowed");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error occurred");
+  }
+};
 
   
   useEffect(() => {
@@ -137,25 +161,7 @@ const Chatroom = ({ rec, setPage }) => {
         <h2 className={styles.logoName}>💬 MiniMessage</h2>
 
         <div
-  onClick={() => {
-    const response = fetch("https://minimessage-egm3.onrender.com/api/verify" , {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: jsonized.encryptedUser,
-    })
-    if (response.ok) {
-      const jj = response.json()
-      if (jj.message === "accepted") {
-        setPage("See")
-      }
-      else{
-        alert("You're not alllowed")
-      }
-    }
-    else{
-      alert("go fuck yourself")
-    }
-  }}
+  onClick={verifyUser()}
   style={{
     position: "absolute",
     right: "16px",

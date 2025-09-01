@@ -126,7 +126,7 @@ app.get("/" , (req,res)=>{
 })
 
 app.get("/api/users", (req, res) => {
-  const users = db.prepare("SELECT username, bio, ppURL FROM users").all();
+  const users = db.prepare("SELECT username,encryptedUser, bio, ppURL FROM users").all();
   res.json(users);
 });
 
@@ -137,24 +137,25 @@ app.post("/api/getdata", (req, res) => {
   else res.status(404).json({ message: "User not found" });
 });
 app.post("/api/verify" , (req,res)=>{
-  const {encryptedUser} = req.body;
-  if (encryptedUser) {
-    try {
-      const parsed   = JSON.parse(encryptedUser)
-    const decrypted = decrypt(parsed)
-    const stmt = db.prepare("SELECT encryptedUser FROM users WHERE username = ?").get(decrypted)
-    if (stmt == encryptedUser) {
-      res.json({message : "accepted"})
+  const { encryptedUser } = req.body;
+  if (!encryptedUser) return res.status(400).json({ message: "No encryptedUser provided" });
+
+  try {
+    const parsed = JSON.parse(encryptedUser);
+    const decrypted = decrypt(parsed); // username
+    const stmt = db.prepare("SELECT encryptedUser FROM users WHERE username = ?").get(decrypted);
+
+    if (stmt && stmt.encryptedUser === encryptedUser) {
+      res.json({ message: "accepted" });
+    } else {
+      res.json({ message: "denied" });
     }
-    else{
-      res.json({message : "denied"})
-    }
-    } catch (error) {
-      res.status(503).json({message : error})
-    }
-    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "server error" });
   }
-})
+});
+
 app.post("/api/messages", (req, res) => {
   const { sender, receiver } = req.body;
   const msgs = getLastMessages(sender, receiver);
