@@ -20,7 +20,7 @@ const Chatroom = ({ rec, setPage }) => {
   const verifyUser = async () => {
     try {
       
-      const parsed = JSON.parse(jsonized.encryptedUser)
+      const parsed = JSON.stringify(jsonized.encryptedUser)
       console.log(parsed)
       const response = await fetch(
         "https://minimessage-egm3.onrender.com/api/verify",
