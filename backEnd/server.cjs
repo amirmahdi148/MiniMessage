@@ -108,7 +108,7 @@ app.post("/api/signup", (req, res) => {
     ).run(username, password , bio, encryptedUser ,  profilePictureUrl);
     res.json("Accepted");
   } catch (err) {
-    res.status(400).json({ message: "User already exists" });
+    res.status(400).json({ message: err});
   }
 });
 
