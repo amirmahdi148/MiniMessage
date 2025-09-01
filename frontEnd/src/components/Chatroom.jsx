@@ -17,54 +17,51 @@ const Chatroom = ({ rec, setPage }) => {
 
   const storedUser = localStorage.getItem("user");
   const jsonized = storedUser ? JSON.parse(storedUser) : null;
-const verifyUser = async () => {
-  localStorage.clear()
-  try {
-    const response = await fetch("https://minimessage-egm3.onrender.com/api/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ encryptedUser: jsonized.encryptedUser }),
-    });
+  const verifyUser = async () => {
+    try {
+      const response = await fetch(
+        "https://minimessage-egm3.onrender.com/api/verify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ encryptedUser: jsonized.encryptedUser }),
+        }
+      );
 
-    if (!response.ok) {
-      alert("Request failed");
-      return;
+      if (!response.ok) {
+        alert("Request failed");
+        return;
+      }
+
+      const jj = await response.json();
+      if (jj.message === "accepted") {
+        setPage("See");
+      } else {
+        alert("You're not allowed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred");
     }
+  };
 
-    const jj = await response.json();
-    if (jj.message === "accepted") {
-      setPage("See");
-    } else {
-      alert("You're not allowed");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Error occurred");
-  }
-};
-
-  
   useEffect(() => {
     if (rec) setReceiver(rec);
   }, [rec]);
 
-  
   useEffect(() => {
     if (chatBoxRef.current)
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
   }, [chat]);
 
-  
   useEffect(() => {
     socket.on("onlineUsers", (users) => setOnlineUsers(users));
     return () => socket.off("onlineUsers");
-    
   }, []);
 
- 
   useEffect(() => {
     if (!jsonized) return;
-    
+
     setUsername(jsonized.username);
     socket.emit("register", jsonized.username);
 
@@ -85,7 +82,6 @@ const verifyUser = async () => {
     };
   }, []);
 
-  
   useEffect(() => {
     if (!receiver) return;
 
@@ -93,11 +89,14 @@ const verifyUser = async () => {
 
     const fetchReceiverData = async () => {
       try {
-        const res = await fetch("https://minimessage-egm3.onrender.com/api/getdata", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ receiver: receiverTr }),
-        });
+        const res = await fetch(
+          "https://minimessage-egm3.onrender.com/api/getdata",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ receiver: receiverTr }),
+          }
+        );
         if (!res.ok) {
           setImg("https://cdn-icons-png.flaticon.com/512/5519/5519632.png");
           setIsValid(false);
@@ -115,11 +114,14 @@ const verifyUser = async () => {
 
     const fetchMessages = async () => {
       try {
-        const res = await fetch("https://minimessage-egm3.onrender.com/api/messages", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sender: username, receiver: receiverTr }),
-        });
+        const res = await fetch(
+          "https://minimessage-egm3.onrender.com/api/messages",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sender: username, receiver: receiverTr }),
+          }
+        );
         if (!res.ok) return;
         const data = await res.json();
         const formatted = data.map((c) => {
@@ -162,35 +164,36 @@ const verifyUser = async () => {
         <h2 className={styles.logoName}>💬 MiniMessage</h2>
 
         <div
-  onClick={verifyUser}
-  style={{
-    position: "absolute",
-    right: "16px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    cursor: "pointer",
-    width: "24px",
-    height: "24px",
-    display: "flex",
-    alignItems: "center",
-    
-    justifyContent: "center",
-  }}
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    width="24"
-    height="24"
-    style={{ color: "#f8fafc" }}
-  >
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
+          onClick={verifyUser}
+          style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            cursor: "pointer",
+            width: "24px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+
+            justifyContent: "center",
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="24"
+            height="24"
+            style={{ color: "#f8fafc" }}
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
       1.79-4 4 1.79 4 4 4zm0 2c-2.67 
-      0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-  </svg>
-</div>
-        
+      0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
+        </div>
       </nav>
 
       <div className={styles.downSection}>
@@ -235,69 +238,64 @@ const verifyUser = async () => {
               {receiver || "نام دریافت کننده..."}
             </div>
             <div
-          onClick={() => setPage("Search")}
-          style={{
-            position: "absolute",
-            right: "16px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            cursor: "pointer",
-            width: "24px",
-            height: "24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-        
-
-
-
-        </div>
+              onClick={() => setPage("Search")}
+              style={{
+                position: "absolute",
+                right: "16px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="24"
+                height="24"
+                style={{ color: "#f8fafc" }}
+              >
+                {" "}
+                <path d="M10 2a8 8 0 105.292 14.708l5.147 5.146a1 1 0 001.415-1.414l-5.146-5.147A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" />{" "}
+              </svg>
+            </div>
           </div>
 
           <div className={styles.chatBox} ref={chatBoxRef}>
             {chat.map((c, i) =>
               c.sender === username ? (
-                 
-                  
-                  <div key={i}  className={styles.you}>
-                    <div className={styles.namor}>
-                    <h6>
-                      You
-                    </h6>
+                <div key={i} className={styles.you}>
+                  <div className={styles.namor}>
+                    <h6>You</h6>
                   </div>
-                    <h3>{c.message}</h3>
-                    <div className={styles.dator}>
-                      <h6 >
+                  <h3>{c.message}</h3>
+                  <div className={styles.dator}>
+                    <h6>
                       {c.hour}:{c.minute}
                     </h6>
-                    </div>
                   </div>
-                  
+                </div>
               ) : (
-                
-                  
-                  <div key={i} className={styles.them}>
-                    <div className={styles.namorr}>
-                    <h6>
-                      {receiver}
-                    </h6>
+                <div key={i} className={styles.them}>
+                  <div className={styles.namorr}>
+                    <h6>{receiver}</h6>
                   </div>
-                    <h3>{c.message}</h3>
-                    <div className={styles.datorr}>
-                      <h6 >
+                  <h3>{c.message}</h3>
+                  <div className={styles.datorr}>
+                    <h6>
                       {c.hour}:{c.minute}
                     </h6>
-                    </div>
                   </div>
-                
+                </div>
               )
-              
             )}
-            
           </div>
-          
+
           <div className={styles.messageSend}>
             <input
               type="text"
