@@ -32,7 +32,7 @@ const Login = ({ setPage }) => {
         
         const {username , ppURL , bio , encryptedUser } = data;
         const deco = JSON.parse(encryptedUser)
-        localStorage.setItem("user", JSON.stringify({ username,ppURL, bio , deco  }));
+        localStorage.setItem("user", JSON.stringify({ username,ppURL, bio , encryptedUser:deco  }));
 
         setSuccess("Login successful!");
         console.log("User data stored in localStorage:", data);
