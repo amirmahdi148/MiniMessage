@@ -31,7 +31,7 @@ function getLastMessages(sender, receiver, limit = 100) {
   `);
   return stmt.all(sender, receiver, receiver, sender, limit);
 }
-import crypto from "crypto";
+
 
 
 const ALGORITHM = "aes-256-gcm";
