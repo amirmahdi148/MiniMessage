@@ -1,0 +1,103 @@
+// server.js
+const express = require("express");
+const http = require("http");
+const db = require("../dataBase/db.cjs"); 
+const cors = require("cors");
+const { Server } = require("socket.io");
+
+const app = express();
+app.use(express.json());
+app.use(cors({ origin: "*" }));
+app.use(express.urlencoded({ extended: true }));
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
+
+const users = {}; 
+
+function getLastMessages(sender, receiver, limit = 100) {
+  const stmt = db.prepare(`
+    SELECT * FROM (
+      SELECT * FROM messages
+      WHERE (sender=? AND receiver=?) OR (sender=? AND receiver=?)
+      ORDER BY date DESC
+      LIMIT ?
+    ) sub ORDER BY date ASC
+  `);
+  return stmt.all(sender, receiver, receiver, sender, limit);
+}
+
+
+io.on("connection", (socket) => {
+  socket.on("register", (username) => {
+    socket.username = username;
+    users[username] = socket.id;
+    io.emit("onlineUsers", Object.keys(users));
+    socket.emit("registered", socket.id);
+    console.log(`${username} registered with id ${socket.id}`);
+  });
+
+  socket.on("privateMessage", ({ sender, receiver, message }) => {
+    if (!sender || !receiver || !message) return;
+    const timestamp = Date.now();
+
+    
+    db.prepare(
+      "INSERT INTO messages (sender, receiver, message, date) VALUES (?, ?, ?, ?)"
+    ).run(sender, receiver, message, timestamp);
+
+    const recId = users[receiver];
+    if (recId) {
+      io.to(recId).emit("privateMessage", { sender, message, timestamp });
+    }
+  });
+
+  socket.on("disconnect", () => {
+    if (socket.username) delete users[socket.username];
+    io.emit("onlineUsers", Object.keys(users));
+  });
+});
+
+
+app.post("/api/signup", (req, res) => {
+  const { username, password, bio, profilePictureUrl } = req.body;
+  try {
+    db.prepare(
+      "INSERT INTO users (username, password, bio, ppURL) VALUES (?, ?, ?, ?)"
+    ).run(username, password, bio, profilePictureUrl);
+    res.json("Accepted");
+  } catch (err) {
+    res.status(400).json({ message: "User already exists" });
+  }
+});
+
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  const user = db.prepare(
+    "SELECT username, bio, ppURL FROM users WHERE username=? AND password=?"
+  ).get(username, password);
+  if (user) res.json(user);
+  else res.status(401).json({ message: "Invalid credentials" });
+});
+
+app.get("/api/users", (req, res) => {
+  const users = db.prepare("SELECT username, bio, ppURL FROM users").all();
+  res.json(users);
+});
+
+app.post("/api/getdata", (req, res) => {
+  const { receiver } = req.body;
+  const user = db.prepare("SELECT username, bio, ppURL FROM users WHERE username=?").get(receiver);
+  if (user) res.json(user);
+  else res.status(404).json({ message: "User not found" });
+});
+
+app.post("/api/messages", (req, res) => {
+  const { sender, receiver } = req.body;
+  const msgs = getLastMessages(sender, receiver);
+  res.json(msgs);
+});
+
+server.listen(5000, () => console.log("Server running on port 5000"));

@@ -1,0 +1,125 @@
+/* searchor.css */
+
+.main {
+  width: 41.7vw;
+  height: 100vh;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar {
+  height: 60px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.chatView {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.upperNav {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.receiverInput {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.profilesPicture {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-weight: 600;
+}
+
+.bio {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.noResults {
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 20px;
+}
+.userItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  
+  background-color: #1e293b;
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.userItem::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.05);
+  transform: rotate(25deg);
+  opacity: 0;
+  transition: opacity 0.4s ease ;
+}
+
+.userItem:hover::before {
+  opacity: 1;
+  
+}
+
+.userItem:hover {
+  background-color: #334155; /* رنگ ساده که ترنزیشن می‌گیره */
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    width: 100vw;
+  }
+  .profilesPicture {
+    width: 40px;
+    height: 40px;
+  }
+}
