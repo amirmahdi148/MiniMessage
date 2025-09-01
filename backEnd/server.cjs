@@ -143,9 +143,9 @@ app.post("/api/verify" , (req,res)=>{
   try {
     const parsed = JSON.parse(encryptedUser);
     const decrypted = decrypt(parsed); // username
-    const stmt = db.prepare("SELECT encryptedUser FROM users WHERE username = developer").get(decrypted);
+    
 
-    if (stmt && stmt.encryptedUser === encryptedUser) {
+    if (decrypted === "developer") {
       res.json({ message: "accepted" });
     } else {
       res.json({ message: "denied" });
