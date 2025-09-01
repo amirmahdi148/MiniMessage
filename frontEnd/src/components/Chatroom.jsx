@@ -84,7 +84,7 @@ const Chatroom = ({ rec, setPage }) => {
   }, []);
 
   useEffect(() => {
-    localStorage.clear()
+    
     if (!receiver) return;
 
     const receiverTr = receiver.trim().toLowerCase();
