@@ -7,7 +7,9 @@ db.prepare(`
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     bio TEXT,
+    encryptedUser TEXT NOT NULL,
     ppURL TEXT
+    
   )
 `).run();
 

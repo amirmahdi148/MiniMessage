@@ -33,6 +33,7 @@ const Chatroom = ({ rec, setPage }) => {
   useEffect(() => {
     socket.on("onlineUsers", (users) => setOnlineUsers(users));
     return () => socket.off("onlineUsers");
+    localStorage.clear()
   }, []);
 
  

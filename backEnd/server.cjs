@@ -4,6 +4,9 @@ const http = require("http");
 const db = require("./dataBase/db.cjs"); 
 const cors = require("cors");
 const { Server } = require("socket.io");
+const crypto = require("crypto")
+const dotenv = require("dotenv").config()
+const secret_key = Buffer.from(process.env.SECRET_KEY, 'utf8').slice(0, 32);
 
 const app = express();
 app.use(express.json());
@@ -28,6 +31,41 @@ function getLastMessages(sender, receiver, limit = 100) {
   `);
   return stmt.all(sender, receiver, receiver, sender, limit);
 }
+import crypto from "crypto";
+
+
+const ALGORITHM = "aes-256-gcm";
+
+function encrypt(text) {
+  const iv = crypto.randomBytes(16); // initialization vector تصادفی
+  const cipher = crypto.createCipheriv(ALGORITHM, secret_key, iv);
+
+  let encrypted = cipher.update(text, "utf8", "hex");
+  encrypted += cipher.final("hex");
+  const authTag = cipher.getAuthTag().toString("hex"); // بررسی integrity
+
+  return {
+    iv: iv.toString("hex"),
+    data: encrypted,
+    tag: authTag,
+  };
+}
+
+function decrypt(encrypted) {
+  const decipher = crypto.createDecipheriv(
+    ALGORITHM,
+    secret_key,
+    Buffer.from(encrypted.iv, "hex")
+  );
+  decipher.setAuthTag(Buffer.from(encrypted.tag, "hex")); // بررسی integrity
+
+  let decrypted = decipher.update(encrypted.data, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+  return decrypted;
+}
+
+
+
 
 
 io.on("connection", (socket) => {
@@ -63,10 +101,11 @@ io.on("connection", (socket) => {
 
 app.post("/api/signup", (req, res) => {
   const { username, password, bio, profilePictureUrl } = req.body;
+  const encryptedUser = encrypt(username)
   try {
     db.prepare(
-      "INSERT INTO users (username, password, bio, ppURL) VALUES (?, ?, ?, ?)"
-    ).run(username, password, bio, profilePictureUrl);
+      "INSERT INTO users (username, password , bio,encryptedUser, ppURL) VALUES (?, ?, ? ,?, ?)"
+    ).run(username, password , bio, encryptedUser ,  profilePictureUrl);
     res.json("Accepted");
   } catch (err) {
     res.status(400).json({ message: "User already exists" });
@@ -75,8 +114,9 @@ app.post("/api/signup", (req, res) => {
 
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
+  
   const user = db.prepare(
-    "SELECT username, bio, ppURL FROM users WHERE username=? AND password=?"
+    "SELECT bio, ppURL , encryptedUser FROM users WHERE username=? AND password=?"
   ).get(username, password);
   if (user) res.json(user);
   else res.status(401).json({ message: "Invalid credentials" });
