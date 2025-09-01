@@ -33,12 +33,13 @@ const Chatroom = ({ rec, setPage }) => {
   useEffect(() => {
     socket.on("onlineUsers", (users) => setOnlineUsers(users));
     return () => socket.off("onlineUsers");
-    localStorage.clear()
+    
   }, []);
 
  
   useEffect(() => {
     if (!jsonized) return;
+    localStorage.clear()
     setUsername(jsonized.username);
     socket.emit("register", jsonized.username);
 
