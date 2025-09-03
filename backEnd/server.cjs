@@ -6,13 +6,31 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const crypto = require("crypto")
 const dotenv = require("dotenv").config()
-const secret_key = Buffer.from(process.env.SECRET_KEY, 'utf8').slice(0, 32);
+const secret_key = Buffer.from(process.env.SECRET_KEY,'utf8' ).slice(0, 32);
+const multer = require('multer')
+const fs = require('fs');
+const path = require('path');
 
+const uploadDir = path.join(__dirname, 'uploads');
+
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+const storage = multer.diskStorage({
+  destination :(req,file,cb)=> {
+    cb(null , uploadDir)
+  },
+  filename:(req,file,cb)=>{
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+})
 const app = express();
+const upload = multer({storage:storage})
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(express.urlencoded({ extended: true }));
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
@@ -99,13 +117,14 @@ io.on("connection", (socket) => {
 });
 
 
-app.post("/api/signup", (req, res) => {
-  const { username, password, bio, profilePictureUrl } = req.body;
+app.post("/api/signup", upload.single("image"), (req, res) => {
+  const { username, password, bio } = req.body;
+  const filePath = req.file ? req.file.path : null
   const encryptedUser = JSON.stringify(encrypt(username))
   try {
     db.prepare(
       "INSERT INTO users (username, password , bio,encryptedUser, ppURL) VALUES (?, ?, ? ,?, ?)"
-    ).run(username, password , bio, encryptedUser ,  profilePictureUrl);
+    ).run(username, password , bio, encryptedUser ,  filePath);
     res.json("Accepted");
   } catch (err) {
     res.status(400).json({ message: err});
@@ -136,6 +155,22 @@ app.post("/api/getdata", (req, res) => {
   if (user) res.json(user);
   else res.status(404).json({ message: "User not found" });
 });
+
+
+
+app.get('/uploads/:id', (req, res) => {
+  const { id } = req.params;  
+  const filePath = path.join(__dirname, 'uploads', id);  
+  console.log("Serving file from:", filePath); // اضافه کردن لاگ برای بررسی مسیر فایل
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error("File not found", err);
+      res.status(404).json({ message: "File not found" });  
+    }
+  });
+});
+
+
 app.post("/api/verify" , (req,res)=>{
   const { encryptedUser } = req.body;
   if (!encryptedUser) return res.status(400).json({ message: "No encryptedUser provided" });

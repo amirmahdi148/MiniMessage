@@ -8,7 +8,7 @@ const See = () => {
   // گرفتن همه کاربران
   const fetchUsers = async () => {
     try {
-      const res = await fetch("https://minimessage-egm3.onrender.com/api/users");
+      const res = await fetch("http://192.168.1.164:5000/api/users");
       if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
       setUsers(data);
@@ -18,8 +18,12 @@ const See = () => {
       setLoading(false);
     }
   };
+const getProfileImageURL = (ppURL) => {
+    if (!ppURL) return def; 
+    const fixedURL = ppURL.replace(/\\/g, '/'); 
+    return `https://minimessage-egm3.onrender.com/uploads/${fixedURL.split('/').pop()}`;
+  };
 
-  // حذف کاربر
   const deleteUser = async (username) => {
     try {
       const res = await fetch("https://minimessage-egm3.onrender.com/api/delete", {
@@ -49,7 +53,7 @@ const See = () => {
         {users.map((user, i) => (
           <div key={i} className={styles.userCard}>
             <img
-              src={user.ppURL || "/default-avatar.png"}
+              src={getProfileImageURL(user.ppURL)}
               alt={user.username}
               className={styles.avatar}
             />

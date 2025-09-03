@@ -2,21 +2,30 @@ import React, { useState } from "react";
 import styles from "./loginer.module.css";
 
 const Signup = ({ setPage }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [bio, setBio] = useState("");
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    bio: "",
+    image: null,  // ذخیره تصویر
+  });
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username.trim()) return setError("Username cannot be empty");
-    if (!password) return setError("Password cannot be empty");
-    if (password.length < 6) return setError("Password must be at least 6 characters");
-    if (!bio.trim()) return setError("Bio cannot be empty");
-    if (!profilePictureUrl.trim()) return setError("Profile picture URL cannot be empty");
+    // بررسی اینکه تمام فیلدها پر شده باشند
+    if (!formData.username.trim()) return setError("Username cannot be empty");
+    if (!formData.password) return setError("Password cannot be empty");
+    if (formData.password.length < 6) return setError("Password must be at least 6 characters");
+    if (!formData.bio.trim()) return setError("Bio cannot be empty");
+
+    const form = new FormData();
+    form.append('username', formData.username);
+    form.append('password', formData.password);
+    form.append('bio', formData.bio);
+    form.append('image', formData.image);  // فایل تصویر
 
     setError("");
     setSuccess("");
@@ -24,8 +33,7 @@ const Signup = ({ setPage }) => {
     try {
       const response = await fetch("https://minimessage-egm3.onrender.com/api/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, bio, profilePictureUrl }),
+        body: form,  
       });
 
       const data = await response.json();
@@ -33,13 +41,22 @@ const Signup = ({ setPage }) => {
       if (response.ok) {
         setSuccess("Sign Up successful!");
         console.log("New user created:", data);
-        setPage("Login");
+        setPage("Login");  // صفحه لاگین بعد از موفقیت
       } else {
         setError(data.message || "Sign Up failed");
       }
     } catch (err) {
       setError("Network error: " + err.message);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });  // ذخیره تصویر
   };
 
   return (
@@ -49,31 +66,33 @@ const Signup = ({ setPage }) => {
         <div className={styles.doublePUT}>
           <input
             type="text"
+            name="username"
             placeholder="Username"
             className={styles.userpass}
-            value={username}
-            onChange={(e) => setUsername(e.target.value.toLowerCase())}
+            value={formData.username}
+            onChange={handleChange}
           />
           <input
             type="password"
+            name="password"
             placeholder="Password"
             className={styles.userpass}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
           />
           <input
             type="text"
+            name="bio"
             placeholder="Bio"
             className={styles.userpass}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
+            value={formData.bio}
+            onChange={handleChange}
           />
           <input
-            type="text"
-            placeholder="Profile Picture URL"
+            type="file"
+            name="image"
             className={styles.userpass}
-            value={profilePictureUrl}
-            onChange={(e) => setProfilePictureUrl(e.target.value)}
+            onChange={handleFileChange}  // انتخاب تصویر
           />
         </div>
 

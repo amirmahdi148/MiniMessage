@@ -108,9 +108,10 @@ const Chatroom = ({ rec, setPage }) => {
           return;
         }
         const data = await res.json();
-        setImg(data.ppURL);
+        const fixedURL = data.ppURL.replace(/\\/g, '/'); // تبدیل \ به /
+        setImg(`https://minimessage-egm3.onrender.com/uploads/${fixedURL.split('/').pop()}`)
         setIsValid(true);
-        // ذخیره receiver در localStorage
+        
         localStorage.setItem("receiver", receiverTr);
       } catch (err) {
         console.error(err);

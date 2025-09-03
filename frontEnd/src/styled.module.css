@@ -37,6 +37,7 @@
   justify-content: center;
   align-items: center;
   
+  
 }
 
 .chatView {
@@ -48,6 +49,7 @@
   padding-top: 20px; 
   padding-bottom: 20px;
   height: calc(90vh - 40px);
+  
 }
 
 .upperNav {
@@ -56,6 +58,7 @@
   margin-top: 60px;
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 12px;
   color: white;
 
