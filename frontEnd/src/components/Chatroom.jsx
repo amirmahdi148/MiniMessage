@@ -27,7 +27,7 @@ const Chatroom = ({ rec, setPage }) => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ encryptedUser: parsed }),
+          body: JSON.stringify({ encryptedUser: jsonized.encryptedUser}),
         }
       );
 
