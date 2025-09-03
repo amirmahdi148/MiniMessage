@@ -173,6 +173,7 @@ app.get('/uploads/:id', (req, res) => {
 
 app.post("/api/verify" , (req,res)=>{
   const { encryptedUser } = req.body;
+  console.log(encryptedUser)
   if (!encryptedUser) return res.status(400).json({ message: "No encryptedUser provided" });
 
   try {

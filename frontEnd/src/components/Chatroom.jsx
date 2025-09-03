@@ -22,6 +22,7 @@ const Chatroom = ({ rec, setPage }) => {
       
       const parsed = JSON.stringify(jsonized.encryptedUser)
       console.log(parsed)
+      console.log(jsonized.encryptedUser)
       const response = await fetch(
         "https://minimessage-egm3.onrender.com/api/verify",
         {
