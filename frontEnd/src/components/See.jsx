@@ -8,7 +8,7 @@ const See = () => {
   // گرفتن همه کاربران
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://192.168.1.164:5000/api/users");
+      const res = await fetch("https://minimessage-egm3.onrender.com/api/users");
       if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
       setUsers(data);
