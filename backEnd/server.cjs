@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*", methods: ["GET", "POST"] },
+  cors: { origin: "https://mini-message-ten.vercel.app",credentials:true, methods: ["GET", "POST" , "DELETE" , "PUT"] },
 });
 
 const users = {}; 
