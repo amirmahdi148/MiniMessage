@@ -6,7 +6,7 @@ const Signup = ({ setPage }) => {
     username: "",
     password: "",
     bio: "",
-    image: null,  // ذخیره تصویر
+    image: null,
   });
 
   const [error, setError] = useState("");
@@ -15,7 +15,6 @@ const Signup = ({ setPage }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // بررسی اینکه تمام فیلدها پر شده باشند
     if (!formData.username.trim()) return setError("Username cannot be empty");
     if (!formData.password) return setError("Password cannot be empty");
     if (formData.password.length < 6) return setError("Password must be at least 6 characters");
@@ -25,7 +24,7 @@ const Signup = ({ setPage }) => {
     form.append('username', formData.username);
     form.append('password', formData.password);
     form.append('bio', formData.bio);
-    form.append('image', formData.image);  // فایل تصویر
+    form.append('image', formData.image);
 
     setError("");
     setSuccess("");
@@ -40,8 +39,7 @@ const Signup = ({ setPage }) => {
 
       if (response.ok) {
         setSuccess("Sign Up successful!");
-        console.log("New user created:", data);
-        setPage("Login");  // صفحه لاگین بعد از موفقیت
+        setPage("Login");
       } else {
         setError(data.message || "Sign Up failed");
       }
@@ -56,7 +54,7 @@ const Signup = ({ setPage }) => {
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });  // ذخیره تصویر
+    setFormData({ ...formData, image: e.target.files[0] });
   };
 
   return (
@@ -92,7 +90,7 @@ const Signup = ({ setPage }) => {
             type="file"
             name="image"
             className={styles.userpass}
-            onChange={handleFileChange}  // انتخاب تصویر
+            onChange={handleFileChange}
           />
         </div>
 
