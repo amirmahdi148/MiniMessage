@@ -176,7 +176,7 @@ app.post("/api/verify" , (req,res)=>{
   if (!encryptedUser) return res.status(400).json({ message: "No encryptedUser provided" });
 
   try {
-    const parsed = JSON.parse(encryptedUser);
+    const parsed = encryptedUser;
     const decrypted = decrypt(parsed); // username
     
 
